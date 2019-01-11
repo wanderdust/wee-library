@@ -2,7 +2,7 @@
 const escape = (str) => {
   return str.split('').map((char) => {
 		return '\\' + char;
-  }).join("");
+  }).join('');
 };
 
 // Repeats a string a specific number of times.
@@ -14,20 +14,28 @@ const repeat = (str, repeatTimes) => {
 
 
 // template constructor. Takes the parameters template string and custom delimiters.
-function Template (string, delimiters = {open: '*(', close: ')*' }) {
+const template = (string, delimiters = {open: '*(', close: ')*' }) => {
 	const open = escape(delimiters.open);
   const close = escape(delimiters.close);
 
-	return function (...args) {
+	return (repeatTimes, ...args) => {
+    if (typeof repeatTimes !== 'number') {
+      throw `The first argument in function template(number of repetitions) must be a number`;
+    }
+
     let tmpltStr = string;
-  	const repetition = args[args.length - 1];
-    const regex = new RegExp(open + "(.*?)" + close);
-   
-    for (let i = 0; i < (args.length - 1); i++) {
+    const regex = new RegExp(open + '(.*?)' + close);
+    
+    for (let i = 0; i < repeatTimes; i++) {
     	let argument = args[i];
       tmpltStr = tmpltStr.replace(regex, argument);
     }
-    
-    repeat(tmpltStr, repetition);
+    repeat(tmpltStr, repeatTimes);
   };
 };
+
+
+// Example
+const myTemplate = template('Hello my name is *(name )* and Im *(surname)*');
+// Args: repetition times, and parameters.
+myTemplate(2, 'Pablo', '25');

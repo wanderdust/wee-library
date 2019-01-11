@@ -1,6 +1,6 @@
 
-const EventTracker = function (name) {
-    this.on = (eventName, callback, context = this) => {
+function EventTracker (name) {
+    this.on = (eventName, callback) => {
         this._events.push({[eventName]: callback})
     };
 
@@ -11,16 +11,15 @@ const EventTracker = function (name) {
             return Object.keys(event) == eventName;
         });
         event[eventName](...args);
+    };
     
-    };
-
-    this.notify = () => {
-
-    };
-
     this._events = [];
+    return this;
 };
 
-var foo = new EventTracker("foo");
-foo.on("party", (something) => console.log("celebrate " + something))
-foo.trigger("party", "fiesta")
+// Example
+const newEventTracker = new EventTracker("foo");
+// Add an event
+newEventTracker.on("party", (something) => console.log("celebrate " + something));
+// Trigger an event
+newEventTracker.trigger("party", "fiesta");
